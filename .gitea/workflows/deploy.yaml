@@ -21,13 +21,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: docker-build
-  cancel-in-progress: false
+  group: deploy
+  cancel-in-progress: true
 
 env:
   CONTAINER_TAG: reg.liteyuki.org/snowykami/web-tools:latest
   CONTAINER_NAME: web-tools
-  CONTAINER_OPTIONS: --network liteyuki-network --network liteyuki6-network
+  CONTAINER_OPTIONS: --network liteyuki-network --network liteyuki6-network --restart unless-stopped
 
 jobs:
   build-and-push-and-deploy:
