@@ -203,7 +203,7 @@ export function MtrBoardForm({ data, setData }: MtrBoardFormProps) {
                           <SelectValue placeholder="Select type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="normal">Normal</SelectItem>
+                          <SelectItem value="local">Local</SelectItem>
                           <SelectItem value="rapid">Rapid</SelectItem>
                           <SelectItem value="express">Express</SelectItem>
                           <SelectItem value="through">Through</SelectItem>
