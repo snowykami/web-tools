@@ -18,7 +18,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BoardData, TrainType } from "./types";
+import { BoardData, ThemeInfo,  TrainType } from "./types";
 
 interface BoardFormProps {
     data: BoardData;
@@ -30,22 +30,38 @@ export function BoardForm({ data, setData }: BoardFormProps) {
         setData({ ...data, statusBar: { ...data.statusBar, [field]: value } });
     };
 
-    const handleTrainChange = (index: number, field: string, value: any) => {
+    type TrainField =
+        | "platform"
+        | "arrival"
+        | "type"
+        | "destination.en"
+        | "destination.cn";
+
+    const handleTrainChange = (
+        index: number,
+        field: TrainField,
+        value: string | TrainType
+    ) => {
         const newTrains = [...data.trains];
         const trainToUpdate = { ...newTrains[index] };
 
         if (field === "destination.en" || field === "destination.cn") {
-            const [, subkey] = field.split(".");
-            (trainToUpdate.destination as any)[subkey] = value;
+            const [, subkey] = field.split(".") as ["destination", "en" | "cn"];
+            trainToUpdate.destination[subkey] = value as string;
+        } else if (field === "type") {
+            trainToUpdate[field] = value as TrainType;
         } else {
-            (trainToUpdate as any)[field] = value;
+            trainToUpdate[field as "platform" | "arrival"] = value;
         }
 
         newTrains[index] = trainToUpdate;
         setData({ ...data, trains: newTrains });
     };
 
-    const handleThemeChange = (field: string, value: string) => {
+    const handleThemeChange = (
+        field: keyof Omit<ThemeInfo, "trainTypeColors"> | "trainTypeColors",
+        value: string | Record<TrainType, string>
+    ) => {
         setData({ ...data, theme: { ...data.theme, [field]: value } });
     };
 
@@ -265,11 +281,11 @@ export function BoardForm({ data, setData }: BoardFormProps) {
                                                 type="color"
                                                 value={data.theme.trainTypeColors[type]}
                                                 onChange={(e) => {
-                                                    const newColors = {
+                                                    const newColors: Record<TrainType, string> = {
                                                         ...data.theme.trainTypeColors,
                                                         [type]: e.target.value,
                                                     };
-                                                    handleThemeChange("trainTypeColors", newColors as any);
+                                                    handleThemeChange("trainTypeColors", newColors);
                                                 }}
                                             />
                                         </div>
